@@ -1,5 +1,6 @@
 {
   "recommendations": [
-    "bbenoist.Nix"
+    "bbenoist.Nix",
+    "arrterian.nix-env-selector"
   ]
 }

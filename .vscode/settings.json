@@ -1,5 +1,6 @@
 {
   "files.associations": {
     "*.nix": "nix"
-  }
+  },
+  "nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix"
 }
