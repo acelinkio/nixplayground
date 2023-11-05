@@ -14,6 +14,7 @@ wsl --distribution nixos
 ## FLAKE
 # sh
 cp ./wsl/flake.nix ~/
+sudo nix-channel --update
 sudo nixos-rebuild switch --flake ~/.
 exit
 

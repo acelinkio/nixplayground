@@ -2,7 +2,6 @@
   description = "SpecialSnowflake";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-  inputs.nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.nixoswsl.url = "github:nix-community/NixOS-WSL";
   inputs.nixoswsl.inputs.nixpkgs.follows = "nixpkgs";
   inputs.vscode-server.url = "github:nix-community/nixos-vscode-server";
@@ -25,8 +24,6 @@
           system = {
             stateVersion = "23.05";
           };
-          programs.nix-ld.enable = true;
-          services.vscode-server.enable = true;
           environment.systemPackages = [
             pkgs.wget
           ];
@@ -46,6 +43,9 @@
             gc.automatic = true;
             gc.options = "--delete-older-than 7d";
           };
+
+          programs.nix-ld.enable = true;
+          services.vscode-server.enable = true;
         })
       ];
     };
