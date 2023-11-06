@@ -1,19 +1,18 @@
 let
   fetchTarball = builtins.fetchTarball;
-  stabletar = fetchTarball {
+  nixtar = fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-23.05.tar.gz";
   };
-  unstabletar = builtins.fetchTarball {
+  nixtarUnstable = fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
   };
-  stablepkgs = import stabletar {};
-  unstablepkgs = import unstabletar {};
+  nixpkgs = import nixtar {};
+  nixpkgsUnstable = import nixtarUnstable {};
 in
-stablepkgs.mkShell {
+nixpkgs.mkShell {
   packages = [
-    stablepkgs.git
-    stablepkgs.neovim
-    stablepkgs.nodejs
-    unstablepkgs.nixd
+    nixpkgs.nil
+    nixpkgs.git
+    nixpkgsUnstable.btop
   ];
 }
