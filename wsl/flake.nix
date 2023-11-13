@@ -15,17 +15,25 @@
     vscode-server,
     ...
     }: {
-    #nixos configs
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         nixoswsl.nixosModules.wsl
         home-manager.nixosModules.home-manager
-        {
+        ({ pkgs, ... }: {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.users.nixos = import ./home.nix;
-        }
+          home-manager.users.nixos = {
+            home.username = "nixos";
+            home.homeDirectory = "/home/nixos";
+            home.stateVersion = "23.05";
+            home.packages = [                               
+              pkgs.alejandra  # nix formatter
+              pkgs.nil        # nix language server
+            ];
+            programs.home-manager.enable = true;
+          };
+        })
         vscode-server.nixosModules.default
         ({ pkgs, ... }: {
           system = {
