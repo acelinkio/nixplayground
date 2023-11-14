@@ -15,79 +15,77 @@
     home-manager,
     vscode-server,
     ...
-  }:
-  let
+  }: let
     username = "nixos";
-  in
-    {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          nixoswsl.nixosModules.wsl
-          vscode-server.nixosModules.default
-          home-manager.nixosModules.home-manager
-          # homemanager inline
-          (
-            { pkgs, ... }: {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              # note that 'nixos' is user
-              home-manager.users.${username} = {
-                home.username = username;
-                home.homeDirectory = "/home/${username}";
-                home.stateVersion = "23.05";
-                home.packages = [                               
-                  pkgs.alejandra  # nix formatter
-                  pkgs.nil        # nix language server
-                ];
-                programs.home-manager.enable = true;
-              };
-            }
-          )
-          # wsl inline
-          (
-            { pkgs, ... }: {
-              wsl = {
-                enable = true;
-                defaultUser = username;
-                # workaround for vscode remoting
-                extraBin = with pkgs; [
-                  { src = "${coreutils}/bin/uname"; }
-                  { src = "${coreutils}/bin/dirname"; }
-                  { src = "${coreutils}/bin/readlink"; }
-                ];
-              };
-            }
-          )
-          # nixos inline
-          (
-            { pkgs, ... }: {
-              system = {
-                stateVersion = "23.05";
-              };
-              environment.systemPackages = [
-                pkgs.btop
-                pkgs.htop
-                pkgs.wget
-                pkgs.jq
-                pkgs.yq-go
-                pkgs.dnsutils
+  in {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        nixoswsl.nixosModules.wsl
+        vscode-server.nixosModules.default
+        home-manager.nixosModules.home-manager
+        # homemanager inline
+        (
+          {pkgs, ...}: {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            # note that 'nixos' is user
+            home-manager.users.${username} = {
+              home.username = username;
+              home.homeDirectory = "/home/${username}";
+              home.stateVersion = "23.05";
+              home.packages = [
+                pkgs.alejandra # nix formatter
+                pkgs.nil # nix language server
               ];
-              nix = {
-                settings.experimental-features = [ "nix-command" "flakes" ];
-                gc.automatic = true;
-                gc.options = "--delete-older-than 7d";
-              };
-            }
-          )
-          # vscode remoting inline
-          (
-            { pkgs, ... }: {
-              programs.nix-ld.enable = true;
-              services.vscode-server.enable = true;
-            }
-          )
-        ];
-      };
+              programs.home-manager.enable = true;
+            };
+          }
+        )
+        # wsl inline
+        (
+          {pkgs, ...}: {
+            wsl = {
+              enable = true;
+              defaultUser = username;
+              # workaround for vscode remoting
+              extraBin = with pkgs; [
+                {src = "${coreutils}/bin/uname";}
+                {src = "${coreutils}/bin/dirname";}
+                {src = "${coreutils}/bin/readlink";}
+              ];
+            };
+          }
+        )
+        # nixos inline
+        (
+          {pkgs, ...}: {
+            system = {
+              stateVersion = "23.05";
+            };
+            environment.systemPackages = [
+              pkgs.btop
+              pkgs.htop
+              pkgs.wget
+              pkgs.jq
+              pkgs.yq-go
+              pkgs.dnsutils
+            ];
+            nix = {
+              settings.experimental-features = ["nix-command" "flakes"];
+              gc.automatic = true;
+              gc.options = "--delete-older-than 7d";
+            };
+          }
+        )
+        # vscode remoting inline
+        (
+          {pkgs, ...}: {
+            programs.nix-ld.enable = true;
+            services.vscode-server.enable = true;
+          }
+        )
+      ];
+    };
   };
 }
