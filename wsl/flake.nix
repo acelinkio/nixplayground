@@ -1,10 +1,10 @@
 {
   description = "SpecialSnowflake";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
   inputs.nixoswsl.url = "github:nix-community/NixOS-WSL";
   inputs.nixoswsl.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.home-manager.url = "github:nix-community/home-manager/release-23.05";
+  inputs.home-manager.url = "github:nix-community/home-manager/release-23.11";
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
   inputs.vscode-server.url = "github:nix-community/nixos-vscode-server";
   inputs.vscode-server.inputs.nixpkgs.follows = "nixpkgs";
@@ -17,8 +17,9 @@
     ...
   }: let
     username = "nixos";
+    systemname = "nixos";
   in {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.${systemname} = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         nixoswsl.nixosModules.wsl
@@ -33,7 +34,7 @@
             home-manager.users.${username} = {
               home.username = username;
               home.homeDirectory = "/home/${username}";
-              home.stateVersion = "23.05";
+              home.stateVersion = "23.11";
               home.packages = [
                 pkgs.alejandra # nix formatter
                 pkgs.nil # nix language server
@@ -61,7 +62,7 @@
         (
           {pkgs, ...}: {
             system = {
-              stateVersion = "23.05";
+              stateVersion = "23.11";
             };
             environment.systemPackages = [
               pkgs.btop
@@ -76,6 +77,7 @@
               gc.automatic = true;
               gc.options = "--delete-older-than 7d";
             };
+            networking.hostName = systemname;
           }
         )
         # vscode remoting inline
